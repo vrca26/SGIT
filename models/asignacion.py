@@ -71,15 +71,18 @@ def delete_asignacion(db: Session, id_asignacion: int):
         db.delete(asignacion)
         db.commit()
         
-def puede_asignar_equipo(db: Session, id_equipo: int, id_asignacion_ignorar=None):
+def puede_asignar_equipo(db: Session, id_equipo: int, fecha_inicio, fecha_fin=None, id_asignacion_ignorar=None):
     """
-    Retorna True si el equipo se puede asignar (no tiene asignación abierta), False si ya está asignado.
+    Retorna True si el equipo se puede asignar en el periodo dado (no hay traslape), False si ya está asignado.
     Si se está editando, se puede ignorar una asignación específica (id_asignacion_ignorar).
     """
-    query = db.query(Asignacion).filter(
-        Asignacion.id_equipo == id_equipo,
-        Asignacion.fecha_fin == None
-    )
+    query = db.query(Asignacion).filter(Asignacion.id_equipo == id_equipo)
     if id_asignacion_ignorar:
         query = query.filter(Asignacion.id_asignacion != id_asignacion_ignorar)
-    return not db.query(query.exists()).scalar()
+    asignaciones = query.all()
+    for a in asignaciones:
+        fin_existente = a.fecha_fin or fecha_fin or a.fecha_inicio
+        fin_nueva = fecha_fin or a.fecha_fin or fecha_inicio
+        if (a.fecha_inicio <= fin_nueva) and (fecha_inicio <= fin_existente):
+            return False
+    return True

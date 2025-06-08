@@ -11,7 +11,7 @@ load_dotenv()
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not SQLALCHEMY_DATABASE_URL:
-    raise ValueError("DATABASE_URL no está definida")
+    print("Error: DATABASE_URL no está definida en el entorno.")
 
 # Crear engine y sesión
 engine = create_engine(SQLALCHEMY_DATABASE_URL)

@@ -2,7 +2,6 @@ from database import Base
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Session
-from database import Base
 
 
 class Ticket(Base):
@@ -23,3 +22,27 @@ def get_ticket_stats(db: Session):
     en_proceso = db.query(Ticket).filter_by(estado="en proceso").count()
     cerrados = db.query(Ticket).filter_by(estado="cerrado").count()
     return {"abiertos": abiertos, "en_proceso": en_proceso, "cerrados": cerrados}
+
+def create_ticket(db: Session, ticket: Ticket):
+    db.add(ticket)
+    db.commit()
+    db.refresh(ticket)
+    return ticket   
+
+def update_ticket(db: Session, ticket_id: int, updates: dict):
+    ticket = db.query(Ticket).filter(Ticket.id_ticket == ticket_id).first()
+    if not ticket:
+        return None
+    for key, value in updates.items():
+        setattr(ticket, key, value)
+    db.commit()
+    db.refresh(ticket)
+    return ticket
+
+def delete_ticket(db: Session, ticket_id: int):
+    ticket = db.query(Ticket).filter(Ticket.id_ticket == ticket_id).first()
+    if not ticket:
+        return None
+    db.delete(ticket)
+    db.commit()
+    return ticket

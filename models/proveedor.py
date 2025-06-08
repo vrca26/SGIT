@@ -34,7 +34,13 @@ def update_proveedor(db: Session, id_proveedor: int, nombre: str, contacto: str,
     return None
 
 def delete_proveedor(db: Session, id_proveedor: int):
+    from .equipo import Equipo
     proveedor = get_proveedor_by_id(db, id_proveedor)
-    if proveedor:
-        db.delete(proveedor)
-        db.commit()
+    if not proveedor:
+        return "Proveedor no encontrado."
+    equipos = db.query(Equipo).filter_by(proveedor_id=id_proveedor).count()
+    if equipos > 0:
+        return "No se puede eliminar el proveedor porque tiene equipos relacionados."
+    db.delete(proveedor)
+    db.commit()
+    return None

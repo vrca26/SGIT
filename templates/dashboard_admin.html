@@ -34,6 +34,11 @@
 
     <div class="container my-4">
         <h1 class="mb-4 text-center">Panel de Administración</h1>
+        {% if error %}
+        <div class="alert alert-danger text-center">
+            {{ error }}
+        </div>
+        {% endif %}
         <div class="row g-4">
             <!-- Columna izquierda: Gestión -->
             <div class="col-lg-4">
@@ -233,13 +238,15 @@
                             </thead>
                             <tbody>
                                 {% for a in asignaciones %}
-                                <tr>
+                                <tr style="cursor:pointer" onclick="window.location='/asignaciones/edit/{{ a.id_asignacion }}'">
                                     <td>{{ a.id_asignacion }}</td>
                                     <td>{{ a.nombre_usuario }}</td>
                                     <td>{{ a.nombre_equipo }}</td>
                                     <td>{{ a.fecha_inicio }}</td>
                                     <td>
-                                        <a href="/asignaciones/edit/{{ a.id_asignacion }}" class="btn btn-primary btn-sm">Editar</a>
+                                        <form method="post" action="/asignaciones/delete/{{ a.id_asignacion }}" style="display:inline;" onsubmit="return confirm('¿Seguro que desea eliminar esta asignación?');">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="event.stopPropagation();">Eliminar</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 {% endfor %}
