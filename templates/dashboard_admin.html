@@ -216,8 +216,9 @@
             <!-- Panel Asignaciones -->
             <div class="col-lg-4">
                 <div class="card shadow">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Últimas asignaciones</h5>
+                        <a href="/asignaciones/create" class="btn btn-light btn-sm">Nueva asignación</a>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-striped mb-0">
@@ -227,6 +228,7 @@
                                     <th>Usuario</th>
                                     <th>Equipo</th>
                                     <th>Inicio</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -236,11 +238,14 @@
                                     <td>{{ a.nombre_usuario }}</td>
                                     <td>{{ a.nombre_equipo }}</td>
                                     <td>{{ a.fecha_inicio }}</td>
+                                    <td>
+                                        <a href="/asignaciones/edit/{{ a.id_asignacion }}" class="btn btn-primary btn-sm">Editar</a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                                 {% if asignaciones|length == 0 %}
                                 <tr>
-                                    <td colspan="4" class="text-center">Sin asignaciones recientes</td>
+                                    <td colspan="5" class="text-center">Sin asignaciones recientes</td>
                                 </tr>
                                 {% endif %}
                             </tbody>

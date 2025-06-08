@@ -3,6 +3,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import SessionLocal
+from datetime import datetime
+
 
 from models.usuario import (
     Usuario, get_all_users, get_user_by_id, create_user, update_user, delete_user
@@ -10,7 +12,7 @@ from models.usuario import (
 from models.ticket import get_recent_tickets, get_ticket_stats
 from models.asignacion import (
     get_recent_assignments, get_all_asignaciones, get_asignacion_by_id,
-    create_asignacion, update_asignacion, delete_asignacion
+    create_asignacion, update_asignacion, delete_asignacion, puede_asignar_equipo
 )
 from models.proveedor import (
     get_all_proveedores, create_proveedor, get_proveedor_by_id, update_proveedor, delete_proveedor
@@ -223,14 +225,20 @@ def equipo_delete(id_equipo: int, db: Session = Depends(get_db)):
 # ========== ASIGNACIONES ==========
 @app.get("/asignaciones", response_class=HTMLResponse)
 def asignaciones_panel(request: Request, db: Session = Depends(get_db)):
-    asignaciones = get_all_asignaciones(db)
     usuarios = get_all_users(db)
+    proveedores = get_all_proveedores(db)
     equipos = get_all_equipos(db)
-    return templates.TemplateResponse("asignaciones_panel.html", {
+    tickets = get_recent_tickets(db)
+    asignaciones = get_recent_assignments(db)
+    stats_tickets = get_ticket_stats(db)
+    return templates.TemplateResponse("dashboard_admin.html", {
         "request": request,
-        "asignaciones": asignaciones,
         "usuarios": usuarios,
-        "equipos": equipos
+        "proveedores": proveedores,
+        "equipos": equipos,
+        "tickets": tickets,
+        "asignaciones": asignaciones,
+        "stats_tickets": stats_tickets
     })
 
 @app.get("/asignaciones/create", response_class=HTMLResponse)
@@ -254,6 +262,21 @@ def asignacion_create(
     fecha_fin: str = Form(None),
     db: Session = Depends(get_db)
 ):
+    if not puede_asignar_equipo(db, id_equipo):
+        usuarios = get_all_users(db)
+        equipos = get_all_equipos(db)
+        return templates.TemplateResponse("asignacion_form.html", {
+            "request": request,
+            "asignacion": None,
+            "usuarios": usuarios,
+            "equipos": equipos,
+            "error": "Este equipo ya está asignado actualmente. Debe finalizar la asignación previa antes de asignar a otra persona."
+        })
+    fecha_inicio = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+    if fecha_fin:
+        fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+    else:
+        fecha_fin = None
     create_asignacion(db, id_usuario, id_equipo, fecha_inicio, fecha_fin)
     return RedirectResponse(url="/asignaciones", status_code=303)
 

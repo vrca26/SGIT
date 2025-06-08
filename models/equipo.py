@@ -31,7 +31,6 @@ def create_equipo(db: Session, tipo, marca, modelo, serie, estado, proveedor_id,
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
-    # Importación local para evitar circularidad
     if id_usuario:
         from .asignacion import create_asignacion
         from datetime import date
