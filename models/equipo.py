@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import Session, declarative_base
-from .asignacion import create_or_update_asignacion
 
 Base = declarative_base()
 
@@ -32,8 +31,11 @@ def create_equipo(db: Session, tipo, marca, modelo, serie, estado, proveedor_id,
     db.add(nuevo)
     db.commit()
     db.refresh(nuevo)
+    # Importación local para evitar circularidad
     if id_usuario:
-        create_or_update_asignacion(db, nuevo.id_equipo, id_usuario)
+        from .asignacion import create_asignacion
+        from datetime import date
+        create_asignacion(db, id_usuario, nuevo.id_equipo, fecha_inicio=date.today())
     return nuevo
 
 def update_equipo(db: Session, id_equipo, tipo, marca, modelo, serie, estado, proveedor_id, id_usuario):
@@ -48,7 +50,9 @@ def update_equipo(db: Session, id_equipo, tipo, marca, modelo, serie, estado, pr
     equipo.proveedor_id = proveedor_id
     db.commit()
     if id_usuario:
-        create_or_update_asignacion(db, equipo.id_equipo, id_usuario)
+        from .asignacion import create_asignacion
+        from datetime import date
+        create_asignacion(db, id_usuario, equipo.id_equipo, fecha_inicio=date.today())
     return None
 
 def delete_equipo(db: Session, id_equipo: int):
