@@ -17,10 +17,19 @@
                 max-width: 100%;
             }
         }
+        body {
+            /* Degradado tipo Odoo: violeta a azul */
+            min-height: 100vh;
+            background: linear-gradient(135deg,rgb(112, 129, 214) 0%,rgb(131, 226, 250) 100%);
+            /* Puedes ajustar los colores a tu gusto */
+        }
+        .custom-navbar {
+        background: linear-gradient(90deg,rgb(3, 22, 119) 0%,rgb(90, 43, 167) 100%) !important;
+        }
     </style>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary custom-navbar">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">SGIT Admin</a>
             <div class="collapse navbar-collapse">
@@ -34,7 +43,7 @@
     </nav>
 
     <div class="container my-4">
-        <h1 class="mb-4 text-center">Panel de Administración</h1>
+        <h1 class="mb-4 text-center text-white fw-bold" style="font-weight:900;">Panel de Administración</h1>
         {% if error %}
         <div class="alert alert-danger text-center">
             {{ error }}
