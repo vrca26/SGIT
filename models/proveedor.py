@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, declarative_base
 
 Base = declarative_base()
 
+
 class Proveedor(Base):
     __tablename__ = "proveedores"
     id_proveedor = Column(Integer, primary_key=True, index=True)
