@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from datetime import datetime
+from fastapi.staticfiles import StaticFiles
 
 
 from models.usuario import (
@@ -37,6 +38,8 @@ def show_login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "error": ""})
 
 from fastapi.responses import RedirectResponse
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.post("/login", response_class=HTMLResponse)
 def login(
