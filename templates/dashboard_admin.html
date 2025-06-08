@@ -5,6 +5,18 @@
     <title>SGIT - Dashboard Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Opcional: ajusta altura de tarjetas para visual uniforme */
+        .card.shadow {
+            min-height: 340px;
+        }
+        @media (max-width: 991.98px) {
+            .col-lg-6, .col-lg-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -23,72 +35,150 @@
     <div class="container my-4">
         <h1 class="mb-4 text-center">Panel de Administración</h1>
         <div class="row g-4">
-            <!-- Panel Usuarios -->
+            <!-- Columna izquierda: Gestión -->
             <div class="col-lg-4">
-                <div class="card shadow">
-                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Usuarios</h5>
-                        <a href="/usuarios/create" class="btn btn-success btn-sm">Crear usuario</a>
+                <div class="row g-4">
+                    <!-- Panel Usuarios -->
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Usuarios</h5>
+                                <a href="/usuarios/create" class="btn btn-success btn-sm">Crear usuario</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nombre</th>
+                                            <th>Correo</th>
+                                            <th>Rol</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for u in usuarios %}
+                                        <tr style="cursor:pointer" onclick="window.location='/usuarios/edit/{{u.id_usuario}}'">
+                                            <td>{{ u.id_usuario }}</td>
+                                            <td>{{ u.nombre }}</td>
+                                            <td>{{ u.correo }}</td>
+                                            <td>{{ u.rol }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{u.id_usuario}}" onclick="event.stopPropagation();">
+                                                    Eliminar
+                                                </button>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="deleteModal{{u.id_usuario}}" tabindex="-1" aria-labelledby="modalLabel{{u.id_usuario}}" aria-hidden="true">
+                                                  <div class="modal-dialog">
+                                                    <form method="post" action="/usuarios/delete/{{u.id_usuario}}">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalLabel{{u.id_usuario}}">¿Eliminar usuario?</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        ¿Estás seguro de que deseas eliminar a <strong>{{u.nombre}}</strong>?
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                      </div>
+                                                    </div>
+                                                    </form>
+                                                  </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if usuarios|length == 0 %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">Sin usuarios registrados</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-0">
-                        <table class="table table-striped mb-0 align-middle">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Nombre</th>
-                                    <th>Correo</th>
-                                    <th>Rol</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for u in usuarios %}
-                                <tr style="cursor:pointer" onclick="window.location='/usuarios/edit/{{u.id_usuario}}'">
-                                    <td>{{ u.id_usuario }}</td>
-                                    <td>{{ u.nombre }}</td>
-                                    <td>{{ u.correo }}</td>
-                                    <td>{{ u.rol }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{u.id_usuario}}" onclick="event.stopPropagation();">
-                                            Eliminar
-                                        </button>
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="deleteModal{{u.id_usuario}}" tabindex="-1" aria-labelledby="modalLabel{{u.id_usuario}}" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <form method="post" action="/usuarios/delete/{{u.id_usuario}}">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="modalLabel{{u.id_usuario}}">¿Eliminar usuario?</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                ¿Estás seguro de que deseas eliminar a <strong>{{u.nombre}}</strong>?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            </div>
-                                            </div>
-                                            </form>
-                                        </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                                {% if usuarios|length == 0 %}
-                                <tr>
-                                    <td colspan="5" class="text-center">Sin usuarios registrados</td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
+                    <!-- Panel Proveedores -->
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Proveedores</h5>
+                                <a href="/proveedores/create" class="btn btn-success btn-sm">Crear proveedor</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th><th>Nombre</th><th>Contacto</th><th>Teléfono</th><th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p in proveedores %}
+                                        <tr style="cursor:pointer" onclick="window.location='/proveedores/edit/{{p.id_proveedor}}'">
+                                            <td>{{ p.id_proveedor }}</td>
+                                            <td>{{ p.nombre }}</td>
+                                            <td>{{ p.contacto or '' }}</td>
+                                            <td>{{ p.telefono or '' }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProveedor{{p.id_proveedor}}" onclick="event.stopPropagation();">Eliminar</button>
+                                                <!-- Modal delete igual que usuarios... -->
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if proveedores|length == 0 %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">Sin proveedores registrados</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Panel Equipos -->
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Equipos</h5>
+                                <a href="/equipos/create" class="btn btn-success btn-sm">Crear equipo</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th><th>Tipo</th><th>Marca</th><th>Estado</th><th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for e in equipos %}
+                                        <tr style="cursor:pointer" onclick="window.location='/equipos/edit/{{e.id_equipo}}'">
+                                            <td>{{ e.id_equipo }}</td>
+                                            <td>{{ e.tipo }}</td>
+                                            <td>{{ e.marca }}</td>
+                                            <td>{{ e.estado }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEquipo{{e.id_equipo}}" onclick="event.stopPropagation();">Eliminar</button>
+                                                <!-- Modal delete igual que usuarios... -->
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% if equipos|length == 0 %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">Sin equipos registrados</td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Panel Tickets -->
+            <!-- Columna derecha: Estadísticas -->
             <div class="col-lg-4">
-                <div class="card shadow">
+                <div class="card shadow mb-4">
                     <div class="card-header bg-info text-white">
                         <h5 class="mb-0">Tickets recientes</h5>
                     </div>
@@ -116,7 +206,6 @@
                                 {% endif %}
                             </tbody>
                         </table>
-                        <!-- Row para estadísticas de tickets -->
                         <div class="mt-4">
                             <h6 class="text-center">Estadísticas de Tickets</h6>
                             <canvas id="ticketChart" width="300" height="200"></canvas>
@@ -124,7 +213,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Panel Asignaciones -->
             <div class="col-lg-4">
                 <div class="card shadow">
@@ -190,5 +278,6 @@
             }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
