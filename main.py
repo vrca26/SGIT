@@ -155,6 +155,8 @@ def proveedor_delete(id_proveedor: int, db: Session = Depends(get_db)):
     return RedirectResponse(url="/dashboard_admin", status_code=303)
 
 # ========== EQUIPOS ==========
+ESTADOS_EQUIPO = ["disponible", "asignado", "reparación"]
+
 @app.get("/equipos/create", response_class=HTMLResponse)
 def equipo_create_form(request: Request, db: Session = Depends(get_db)):
     proveedores = get_all_proveedores(db)
@@ -164,7 +166,8 @@ def equipo_create_form(request: Request, db: Session = Depends(get_db)):
         "equipo": None,
         "proveedores": proveedores,
         "usuarios": usuarios,
-        "error": ""
+        "error": "",
+        "estados_equipo": ESTADOS_EQUIPO
     })
 
 @app.post("/equipos/create", response_class=HTMLResponse)
@@ -192,7 +195,8 @@ def equipo_edit_form(id_equipo: int, request: Request, db: Session = Depends(get
         "equipo": equipo,
         "proveedores": proveedores,
         "usuarios": usuarios,
-        "error": ""
+        "error": "",
+        "estados_equipo": ESTADOS_EQUIPO
     })
 
 @app.post("/equipos/edit/{id_equipo}", response_class=HTMLResponse)

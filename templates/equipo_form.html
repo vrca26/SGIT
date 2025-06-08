@@ -34,7 +34,11 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" name="estado" value="{{ equipo.estado if equipo }}">
+                    <select class="form-select" name="estado" required>
+                        {% for estado in estados_equipo %}
+                        <option value="{{ estado }}" {% if equipo and equipo.estado == estado %}selected{% endif %}>{{ estado|title }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Proveedor</label>

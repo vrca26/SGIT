@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Session, declarative_base
 from sqlalchemy.exc import IntegrityError
+from database import Base
 
-Base = declarative_base()
 
 class Usuario(Base):
     __tablename__ = "usuarios"

@@ -3,6 +3,8 @@ from sqlalchemy import Column, Integer, Date, ForeignKey
 from sqlalchemy.orm import Session
 from .usuario import Usuario
 from .equipo import Equipo
+from database import Base
+
 
 class Asignacion(Base):
     __tablename__ = "asignaciones"

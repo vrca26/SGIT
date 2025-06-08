@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Session, declarative_base
-
-Base = declarative_base()
+from sqlalchemy.orm import Session
+from database import Base
 
 
 class Proveedor(Base):
