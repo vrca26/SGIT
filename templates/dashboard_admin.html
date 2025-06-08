@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SGIT - Dashboard Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SGIT Admin</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <h1 class="mb-4 text-center">Panel de Administración</h1>
+        <div class="row g-4">
+            <!-- Panel Usuarios -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">Usuarios</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in usuarios %}
+                                <tr>
+                                    <td>{{ u.id_usuario }}</td>
+                                    <td>{{ u.nombre }}</td>
+                                    <td>{{ u.correo }}</td>
+                                    <td>{{ u.rol }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if usuarios|length == 0 %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Sin usuarios registrados</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Tickets -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Tickets recientes</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Asunto</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for t in tickets %}
+                                <tr>
+                                    <td>{{ t.id_ticket }}</td>
+                                    <td>{{ t.asunto }}</td>
+                                    <td>{{ t.estado }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if tickets|length == 0 %}
+                                <tr>
+                                    <td colspan="3" class="text-center">Sin tickets recientes</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        <!-- Row para estadísticas de tickets -->
+                        <div class="mt-4">
+                            <h6 class="text-center">Estadísticas de Tickets</h6>
+                            <canvas id="ticketChart" width="300" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Asignaciones -->
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Últimas asignaciones</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Equipo</th>
+                                    <th>Inicio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in asignaciones %}
+                                <tr>
+                                    <td>{{ a.id_asignacion }}</td>
+                                    <td>{{ a.nombre_usuario }}</td>
+                                    <td>{{ a.nombre_equipo }}</td>
+                                    <td>{{ a.fecha_inicio }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if asignaciones|length == 0 %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Sin asignaciones recientes</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chart.js Script para estadísticas de tickets -->
+    <script>
+        const ctx = document.getElementById('ticketChart').getContext('2d');
+        const ticketChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Abiertos', 'En Proceso', 'Cerrados'],
+                datasets: [{
+                    label: 'Tickets',
+                    data: [
+                        {{ stats_tickets.abiertos|default(0) }},
+                        {{ stats_tickets.en_proceso|default(0) }},
+                        {{ stats_tickets.cerrados|default(0) }}
+                    ],
+                    backgroundColor: ['#0dcaf0', '#ffc107', '#198754'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
