@@ -86,7 +86,7 @@
                                                         ¿Estás seguro de que deseas eliminar a <strong>{{u.nombre}}</strong>?
                                                       </div>
                                                       <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="event.stopPropagation();">Cancelar</button>
                                                         <button type="submit" class="btn btn-danger">Eliminar</button>
                                                       </div>
                                                     </div>
@@ -129,7 +129,26 @@
                                             <td>{{ p.telefono or '' }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteProveedor{{p.id_proveedor}}" onclick="event.stopPropagation();">Eliminar</button>
-                                                <!-- Modal delete igual que usuarios... -->
+                                                <!-- Modal de confirmación -->
+                                                <div class="modal fade" id="deleteProveedor{{p.id_proveedor}}" tabindex="-1" aria-labelledby="modalProveedorLabel{{p.id_proveedor}}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post" action="/proveedores/delete/{{p.id_proveedor}}">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalProveedorLabel{{p.id_proveedor}}">¿Eliminar proveedor?</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        ¿Estás seguro de que deseas eliminar a <strong>{{p.nombre}}</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="event.stopPropagation();">Cancelar</button>
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                    </div>
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -143,6 +162,7 @@
                             </div>
                         </div>
                     </div>
+
                     <!-- Panel Equipos -->
                     <div class="col-12">
                         <div class="card shadow">
@@ -166,7 +186,26 @@
                                             <td>{{ e.estado }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEquipo{{e.id_equipo}}" onclick="event.stopPropagation();">Eliminar</button>
-                                                <!-- Modal delete igual que usuarios... -->
+                                                <!-- Modal de confirmación -->
+                                                <div class="modal fade" id="deleteEquipo{{e.id_equipo}}" tabindex="-1" aria-labelledby="modalEquipoLabel{{e.id_equipo}}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="post" action="/equipos/delete/{{e.id_equipo}}">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="modalEquipoLabel{{e.id_equipo}}">¿Eliminar equipo?</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        ¿Estás seguro de que deseas eliminar el equipo <strong>{{e.tipo}} ({{e.marca}})</strong>?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="event.stopPropagation();">Cancelar</button>
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                    </div>
+                                                    </div>
+                                                    </form>
+                                                </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         {% endfor %}

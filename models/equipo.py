@@ -55,15 +55,10 @@ def update_equipo(db: Session, id_equipo, tipo, marca, modelo, serie, estado, pr
     return None
 
 def delete_equipo(db: Session, id_equipo: int):
-    from .asignacion import Asignacion
-    from .ticket import Ticket
     equipo = get_equipo_by_id(db, id_equipo)
     if not equipo:
         return "Equipo no encontrado."
-    asignaciones = db.query(Asignacion).filter_by(id_equipo=id_equipo).count()
-    tickets = db.query(Ticket).filter_by(id_equipo=id_equipo).count()
-    if asignaciones > 0 or tickets > 0:
-        return "No se puede eliminar el equipo porque tiene asignaciones o tickets relacionados."
+    # Elimina la validación de asignaciones y tickets relacionados
     db.delete(equipo)
     db.commit()
     return None
